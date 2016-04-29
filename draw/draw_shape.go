@@ -2,49 +2,36 @@
 package draw
 
 import (
-	"io"
 	"image"
 	"github.com/llgcode/draw2d/draw2dimg"
 	"image/color"
-	"net/http"
 	"image/draw"
+	"github.com/pkg/errors"
 	_ "image/jpeg"
 	_ "image/png"
 )
 
-func DrawRectangleFromInternet(url string, dstPath string, x, xLen, y, yLen float64) error {
-	resp, err := http.Get(url)
-
-	if err != nil {
-		return err;
-	}
-
-	defer resp.Body.Close()
-
-	return DrawRectangleFromReader(resp.Body, dstPath, x, xLen, y, yLen)
-}
-
-func DrawRectangleFromReader(sourceImg io.Reader, dstPath string, x, xLen, y, yLen float64) error {
-	img, _, err := image.Decode(sourceImg);
-	if err != nil {
-		return err
-	}
-
-	processedImg, err := drawRectangle(img, x, xLen, y, yLen)
-
-	return draw2dimg.SaveToPngFile(dstPath, processedImg)
-
-	return err
-}
-
-func drawRectangle(srcImg image.Image, x, xLen, y, yLen float64) (image.Image, error) {
+// DrawRectangle draws rectangles with given sizes.
+func DrawRectangle(srcImg image.Image, rectangles []image.Rectangle) (image.Image, error) {
 	// create a copy of srcImg to dstImg
 	r := srcImg.Bounds()
 	dstImg := image.NewRGBA(srcImg.Bounds())
 	draw.Draw(dstImg, r, srcImg, r.Min, draw.Src)
 
+	for _, rect := range rectangles {
+		err := drawRectangle(dstImg, float64(rect.Min.X), float64(rect.Dx()), float64(rect.Min.Y), float64(rect.Dy()))
+		if err != nil {
+			return dstImg, errors.Wrap(err, "Got error while drawing rectangle " + rect.String())
+		}
+	}
+
+	return dstImg, nil
+}
+
+func drawRectangle(img draw.Image, x, xLen, y, yLen float64) error {
+
 	// Initialize the graphic context on an RGBA image
-	gc := draw2dimg.NewGraphicContext(dstImg)
+	gc := draw2dimg.NewGraphicContext(img)
 
 	// Set some properties
 	gc.SetFillColor(color.Transparent)
@@ -62,5 +49,5 @@ func drawRectangle(srcImg image.Image, x, xLen, y, yLen float64) (image.Image, e
 
 	gc.Restore()
 
-	return dstImg, nil
+	return nil
 }
