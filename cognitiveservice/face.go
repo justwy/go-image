@@ -107,7 +107,7 @@ type FaceRectangle struct {
 	Top float32 `json:"top"`
 }
 
-type DetectResponse struct {
+type DetectInfo struct {
 	// Id of the detected face, created by detection API.
 	// To return this, it requires "returnFaceId" parameter to be true.
 	FaceId         string        `json:"faceID"`
@@ -149,7 +149,7 @@ type FindSimilarResponse struct {
 type FaceAPI interface {
 	// Detect human faces in an image and returns face locations,
 	// and optionally with face ID, landmarks, and attributes.
-	Detect(url string) ([]DetectResponse, error)
+	Detect(url string) ([]DetectInfo, error)
 
 	// looking faces for a query face from a list of candidate faces (given by a face list or a face ID array)
 	// and return similar face IDs ranked by similarity. The candidate face list has a limitation of 1000 faces.
@@ -168,11 +168,11 @@ type MicrosoftFaceAPI struct {
 	APIKey  string
 }
 
-func (faceAPI MicrosoftFaceAPI) Detect(url string) ([]DetectResponse, error) {
+func (faceAPI MicrosoftFaceAPI) Detect(url string) ([]DetectInfo, error) {
 
 	queryURL := faceAPI.BaseURL
 
-	detectResponse := []DetectResponse{}
+	detectResponse := []DetectInfo{}
 
 	err := commonHTTPRequest(http.MethodPost, queryURL, faceAPI.APIKey, strings.NewReader(`{"url": "` + url  + `"}`), &detectResponse)
 

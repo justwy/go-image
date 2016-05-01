@@ -20,7 +20,7 @@ func DetectFace(url string, faceAPI cognitiveservice.FaceAPI, uploader s3uploade
 
 	defer resp.Body.Close()
 
-	faceResult, err := faceAPI.Detect(url)
+	detectInfos, err := faceAPI.Detect(url)
 	if err != nil {
 		return returnedURL, errors.Wrap(err, "Failed to detect face " + url)
 	}
@@ -30,17 +30,8 @@ func DetectFace(url string, faceAPI cognitiveservice.FaceAPI, uploader s3uploade
 		return returnedURL, errors.Wrap(err, "Failed to decode image at " + url)
 	}
 
-	var rects []image.Rectangle
-	for _, face := range faceResult {
-		rects = append(rects, image.Rect(
-			int(face.FaceRectangle.Left),
-			int(face.FaceRectangle.Top),
-			int(face.FaceRectangle.Left + face.FaceRectangle.Width),
-			int(face.FaceRectangle.Top + face.FaceRectangle.Height)))
-	}
-
 	//draw.DrawRectangle(img, faceResult)
-	processed, err := draw.DrawRectangle(img, rects)
+	processed, err := draw.DrawRectangle(img, detectInfos)
 	if err != nil {
 		return returnedURL, errors.Wrap(err, "Failed to decode image at " + url)
 	}
@@ -48,7 +39,7 @@ func DetectFace(url string, faceAPI cognitiveservice.FaceAPI, uploader s3uploade
 	buf := new(bytes.Buffer)
 	png.Encode(buf, processed)
 
-	returnedURL, err = uploader.Upload(strings.NewReader(string(buf.Bytes())), 1)
+	returnedURL, err = uploader.Upload(url, strings.NewReader(string(buf.Bytes())), 1)
 	if err != nil {
 		return returnedURL, errors.Wrap(err, "Failed to upload processed image to S3")
 	}
