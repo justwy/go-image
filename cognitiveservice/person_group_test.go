@@ -1,12 +1,13 @@
 package cognitiveservice_test
 
 import (
-	"testing"
-	"github.com/justwy/treqme/cognitiveservice"
 	"fmt"
-	"os"
-	"net/http/httptest"
 	"net/http"
+	"net/http/httptest"
+	"os"
+	"testing"
+
+	"github.com/justwy/treqme/cognitiveservice"
 )
 
 var personGroupAPI cognitiveservice.MicrosoftPersonGroupAPI
@@ -44,8 +45,8 @@ func TestMain(m *testing.M) {
 func TestMicrosoftPersonGroupAPI_Create(t *testing.T) {
 	err := personGroupAPI.Create(cognitiveservice.PersonGroupObject{
 		PersonGroupID: "test_group",
-		Name: "test_name",
-		UserData: "test_user_data",
+		Name:          "test_name",
+		UserData:      "test_user_data",
 	})
 
 	if err != nil {
@@ -56,8 +57,8 @@ func TestMicrosoftPersonGroupAPI_Create(t *testing.T) {
 func TestMicrosoftPersonGroupAPI_Create_Error_Code(t *testing.T) {
 	err := personGroupAPI.Create(cognitiveservice.PersonGroupObject{
 		PersonGroupID: "error_test_group",
-		Name: "test_name",
-		UserData: "test_user_data",
+		Name:          "test_name",
+		UserData:      "test_user_data",
 	})
 
 	if err == nil {

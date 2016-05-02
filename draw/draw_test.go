@@ -1,14 +1,17 @@
 package draw_test
 
 import (
-	"testing"
-	"fmt"
-	"github.com/justwy/treqme/draw"
-	"os"
-	"log"
-	"image"
 	"bufio"
+	"fmt"
+	"image"
+	_ "image/jpeg"
 	"image/png"
+	"log"
+	"os"
+	"testing"
+
+	"github.com/justwy/treqme/cognitiveservice"
+	"github.com/justwy/treqme/draw"
 )
 
 func TestDrawRectangleFromInternet(t *testing.T) {
@@ -28,7 +31,31 @@ func ExampleDrawRectangleFromReader() {
 	img, _, _ := image.Decode(imgFile)
 
 	// Draw a rectangle of width 20 and height 10 with the top left point at (10, 20)
-	processed, _ := draw.DrawRectangle(img, []image.Rectangle{image.Rect(5, 5, 10, 10), image.Rect(10, 10, 20, 20)})
+	detectInfos := []cognitiveservice.DetectInfo{
+		cognitiveservice.DetectInfo{
+			FaceRectangle: cognitiveservice.FaceRectangle{
+				Width:  10,
+				Height: 10,
+				Left:   5,
+				Top:    5,
+			},
+			FaceAttributes: cognitiveservice.FaceAttributes{
+				Age: 25,
+			},
+		},
+		cognitiveservice.DetectInfo{
+			FaceRectangle: cognitiveservice.FaceRectangle{
+				Width:  20,
+				Height: 20,
+				Left:   10,
+				Top:    10,
+			},
+			FaceAttributes: cognitiveservice.FaceAttributes{
+				Age: 35,
+			},
+		},
+	}
+	processed, _ := draw.DetectInfo(img, detectInfos)
 	fmt.Println("debug: ", err)
 
 	f, _ := os.Create("./testdata/rect.jpg")

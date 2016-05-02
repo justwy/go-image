@@ -1,15 +1,18 @@
 package main
 
 import (
-	"github.com/justwy/treqme/cognitiveservice"
+	"fmt"
+	_ "image/jpeg"
+	_ "image/png"
+	"log"
+	"net/http"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/justwy/treqme/s3uploader"
-	"github.com/justwy/treqme/handler"
-	"fmt"
 	"github.com/aws/aws-sdk-go/service/s3"
-	"net/http"
-	"log"
+	"github.com/justwy/treqme/cognitiveservice"
+	"github.com/justwy/treqme/handler"
+	"github.com/justwy/treqme/s3uploader"
 )
 
 var (
@@ -18,16 +21,16 @@ var (
 	svc = s3.New(session.New(&aws.Config{Region: aws.String("us-east-1")}))
 
 	s3Uploader = s3uploader.S3Uploader{
-		svc,
-		"treqme",
-		"img/",
+		S3SVC:    svc,
+		S3Bucket: "treqme",
+		S3Key:    "img/",
 	}
 )
 
 func processImage(w http.ResponseWriter, r *http.Request) {
 	queryMap := r.URL.Query()
-	imgUrl := queryMap["url"][0]
-	url, err := handler.DetectFace(imgUrl, faceAPI, s3Uploader)
+	imgURL := queryMap["url"][0]
+	url, err := handler.DetectFace(imgURL, faceAPI, s3Uploader)
 	if err != nil {
 		http.Error(w, "Failed to process image with error", http.StatusInternalServerError)
 		log.Print(err)

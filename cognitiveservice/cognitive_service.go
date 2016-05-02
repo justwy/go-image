@@ -18,6 +18,6 @@ func NewMicrosoftCognitiveService(apiKey string) CognitiveService {
 		APIKey:         apiKey,
 		contentType:    "application/json",
 		PersonGroupAPI: NewMicrosoftPersonGroupAPI(personGroupBaseURL, apiKey),
-		FaceAPI: NewMicrosoftFaceAPI(apiKey),
+		FaceAPI:        NewMicrosoftFaceAPI(apiKey),
 	}
 }

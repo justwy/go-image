@@ -2,6 +2,7 @@ package cognitiveservice_test
 
 import (
 	"testing"
+
 	"github.com/justwy/treqme/cognitiveservice"
 )
 

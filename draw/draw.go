@@ -3,23 +3,22 @@ package draw
 
 import (
 	"image"
-	"github.com/llgcode/draw2d/draw2dimg"
 	"image/color"
 	"image/draw"
-	"github.com/pkg/errors"
-	"github.com/justwy/treqme/cognitiveservice"
-	_ "image/jpeg"
-	_ "image/png"
 	"strconv"
+
+	"github.com/justwy/treqme/cognitiveservice"
 	"github.com/llgcode/draw2d"
+	"github.com/llgcode/draw2d/draw2dimg"
+	"github.com/pkg/errors"
 )
 
 func init() {
 	draw2d.SetFontFolder("./resource/font/")
 }
 
-// DrawRectangle draws rectangles with given sizes.
-func DrawRectangle(srcImg image.Image, detectInfos []cognitiveservice.DetectInfo) (image.Image, error) {
+// DetectInfo draws rectangles with given sizes.
+func DetectInfo(srcImg image.Image, detectInfos []cognitiveservice.DetectInfo) (image.Image, error) {
 	// create a copy of srcImg to dstImg
 	r := srcImg.Bounds()
 	dstImg := image.NewRGBA(srcImg.Bounds())
@@ -32,15 +31,15 @@ func DrawRectangle(srcImg image.Image, detectInfos []cognitiveservice.DetectInfo
 		rects = append(rects, image.Rect(
 			int(face.FaceRectangle.Left),
 			int(face.FaceRectangle.Top),
-			int(face.FaceRectangle.Left + face.FaceRectangle.Width),
-			int(face.FaceRectangle.Top + face.FaceRectangle.Height)))
+			int(face.FaceRectangle.Left+face.FaceRectangle.Width),
+			int(face.FaceRectangle.Top+face.FaceRectangle.Height)))
 		ages = append(ages, strconv.Itoa(int(face.FaceAttributes.Age)))
 	}
 
 	for i, rect := range rects {
 		err := drawFace(dstImg, ages[i], float64(rect.Min.X), float64(rect.Dx()), float64(rect.Min.Y), float64(rect.Dy()))
 		if err != nil {
-			return dstImg, errors.Wrap(err, "Got error while drawing rectangle " + rect.String())
+			return dstImg, errors.Wrap(err, "Got error while drawing rectangle "+rect.String())
 		}
 	}
 
@@ -59,15 +58,15 @@ func drawFace(img draw.Image, age string, x, xLen, y, yLen float64) error {
 
 	// Draw a closed shape
 	gc.MoveTo(x, y) // should always be called first for a new path
-	gc.LineTo(x, y + yLen)
-	gc.LineTo(x + xLen, y + yLen)
-	gc.LineTo(x + xLen, y)
+	gc.LineTo(x, y+yLen)
+	gc.LineTo(x+xLen, y+yLen)
+	gc.LineTo(x+xLen, y)
 	gc.LineTo(x, y)
 
 	// Draw text
 	gc.SetFontData(draw2d.FontData{Name: "luxi", Family: draw2d.FontFamilyMono, Style: draw2d.FontStyleBold | draw2d.FontStyleItalic})
 	gc.SetFontSize(30)
-	gc.StrokeStringAt("Age: " + age, x, y - 5)
+	gc.StrokeStringAt("Age: "+age, x, y-5)
 
 	gc.Close()
 	gc.FillStroke()

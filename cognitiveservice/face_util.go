@@ -1,15 +1,15 @@
 package cognitiveservice
 
 import (
-	//"encoding/json"
+	"encoding/json"
 	"io"
 	"io/ioutil"
 	"net/http"
+
 	"github.com/syndtr/goleveldb/leveldb/errors"
-	"encoding/json"
 )
 
-const apiKeyName = "Ocp-Apim-Subscription-Key";
+const apiKeyName = "Ocp-Apim-Subscription-Key"
 
 func commonHTTPRequest(
 	httpMethod string, url string, apiKey string, requestBody io.Reader, responseObject interface{}) error {

@@ -11,27 +11,39 @@ import (
 const faceBaseURL = "https://api.projectoxford.ai/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=true&returnFaceAttributes=age,gender,headPose,smile,facialHair,glasses"
 
 const (
-	AgeAttr string = "age"        // an age number in years
-	GenderAttr string = "gender"     // male or female
-	HeadPoseAttr string = "headPose"   // 3-D roll/yew/pitch angles for face direction. Pitch value is reserved to 0
-	SmileAttr string = "smile"      // smile intensity, a number between [0,1]
-	FacialHairAttr string = "facialHair" // consists of lengths of three facial hair areas: moustache, beard and sideburns
-	GlassesAttr string = "glasses"    // glasses type. Possible values are 'noGlasses', 'readingGlasses', 'sunglasses', 'swimmingGoggles'
+	// AgeAttr is an age number in years
+	AgeAttr string = "age"
+	// GenderAttr - male or female
+	GenderAttr string = "gender"
+	// HeadPoseAttr - 3-D roll/yew/pitch angles for face direction. Pitch value is reserved to 0
+	HeadPoseAttr string = "headPose"
+	// SmileAttr - smile intensity, a number between [0,1]
+	SmileAttr string = "smile"
+	// FacialHairAttr - consists of lengths of three facial hair areas: moustache, beard and sideburns
+	FacialHairAttr string = "facialHair"
+	// GlassesAttr - glasses type. Possible values are 'noGlasses', 'readingGlasses', 'sunglasses', 'swimmingGoggles'
+	GlassesAttr string = "glasses"
 )
 
 const (
-	Male string = "male"   // Male in string
-	Female string = "female" // Female in string
+	// Male in string
+	Male string = "male"
+	// Female in string
+	Female string = "female"
 )
 
 // GlassType in string
 type GlassType string
 
 const (
-	NoGlasses GlassType = "noGlasses"       // no glasses
-	ReadingGlasses GlassType = "readingGlasses"  // reading glasses
-	Sunglasses GlassType = "sunglasses"      // sun glasses
-	SwimmingGoggles GlassType = "swimmingGoggles" // swimming goggles
+	// NoGlasses - no glasses
+	NoGlasses GlassType = "noGlasses"
+	// ReadingGlasses - reading glasses
+	ReadingGlasses GlassType = "readingGlasses"
+	// Sunglasses - un glasses
+	Sunglasses GlassType = "sunglasses"
+	// SwimmingGoggles - wimming goggles
+	SwimmingGoggles GlassType = "swimmingGoggles"
 )
 
 // Point represents a position
@@ -40,6 +52,8 @@ type Point struct {
 	Y float32 `json:"y"`
 }
 
+// FaceLandmarks is an array of 27-point face landmarks pointing to the important positions of face components.
+// To return this, it requires "returnFaceLandmarks" parameter to be true.
 type FaceLandmarks struct {
 	PupilLeft           Point `json:"pupilLeft"`
 	PupilRight          Point `json:"pupilRight"`
@@ -84,7 +98,7 @@ type HeadPose struct {
 	Pitch float32 `json:"pitch"`
 }
 
-// Face Attributes:
+// FaceAttributes consists of
 //   age: an age number in years.
 //   gender: male or female.
 //   smile: smile intensity, a number between [0,1]
@@ -92,31 +106,33 @@ type HeadPose struct {
 //   headPose: 3-D roll/yew/pitch angles for face direction. Pitch value is reserved to 0.
 //   glasses: glasses type. Possible values are 'noGlasses', 'readingGlasses', 'sunglasses', 'swimmingGoggles'.
 type FaceAttributes struct {
-	Age        float32 `json:"age"`
-	Gender     string `json:"gender"`
-	Smile      float32 `json:"smile"`
+	Age        float32    `json:"age"`
+	Gender     string     `json:"gender"`
+	Smile      float32    `json:"smile"`
 	FacialHair FacialHair `json:"facialHair"`
-	Glasses    GlassType `json:"glasses"`
-	HeadPose   HeadPose `json:"headPose"`
+	Glasses    GlassType  `json:"glasses"`
+	HeadPose   HeadPose   `json:"headPose"`
 }
 
+// FaceRectangle left is x, Top y. Width is Dx and Hieght is Dy.
 type FaceRectangle struct {
-	Width float32 `json:"width"`
+	Width  float32 `json:"width"`
 	Height float32 `json:"height"`
-	Left float32 `json:"left"`
-	Top float32 `json:"top"`
+	Left   float32 `json:"left"`
+	Top    float32 `json:"top"`
 }
 
+// DetectInfo contains all face information.
 type DetectInfo struct {
 	// Id of the detected face, created by detection API.
 	// To return this, it requires "returnFaceId" parameter to be true.
-	FaceId         string        `json:"faceID"`
+	FaceID string `json:"faceID"`
 
 	FaceRectangle FaceRectangle `json:"faceRectangle"`
 
 	// An array of 27-point face landmarks pointing to the important positions of face components.
 	// To return this, it requires "returnFaceLandmarks" parameter to be true.
-	FaceLandmarks  FaceLandmarks `json:"faceLandmarks"`
+	FaceLandmarks FaceLandmarks `json:"faceLandmarks"`
 
 	// Face Attributes:
 	//   age: an age number in years.
@@ -128,24 +144,27 @@ type DetectInfo struct {
 	FaceAttributes FaceAttributes `json:"faceAttributes"`
 }
 
+// FindSimilarRequest represents a request for "Find Similar" API.
 type FindSimilarRequest struct {
 	// Id of the detected face, created by detection API.
 	// To return this, it requires "returnFaceId" parameter to be true.
-	FaceId                     string
+	FaceID string
 
 	// An array of 27-point face landmarks pointing to the important positions of face components.
 	// To return this, it requires "returnFaceLandmarks" parameter to be true.
-	FaceListId                 string
+	FaceListID string
 
 	MaxNumOfCandidatesReturned int
 }
 
+// FindSimilarResponse represents the response object for "Find Similar" API.
 type FindSimilarResponse struct {
-	PersistedFaceId string
-	FaceId          string
+	PersistedFaceID string
+	FaceID          string
 	Confidence      float32
 }
 
+// FaceAPI provides APIs related to face recognition such as face detections.
 type FaceAPI interface {
 	// Detect human faces in an image and returns face locations,
 	// and optionally with face ID, landmarks, and attributes.
@@ -161,20 +180,22 @@ type FaceAPI interface {
 	// FindSimilarByFaceIds(faceId string, faceIds []string, maxNumOfCandidatesReturned int) (string, float32, error)
 }
 
+// MicrosoftFaceAPI implements FaceAPI.
 type MicrosoftFaceAPI struct {
 	// API base url
 	BaseURL string
 	// API key
-	APIKey  string
+	APIKey string
 }
 
+// Detect detects face with the given image with age.
 func (faceAPI MicrosoftFaceAPI) Detect(url string) ([]DetectInfo, error) {
 
 	queryURL := faceAPI.BaseURL
 
 	detectResponse := []DetectInfo{}
 
-	err := commonHTTPRequest(http.MethodPost, queryURL, faceAPI.APIKey, strings.NewReader(`{"url": "` + url  + `"}`), &detectResponse)
+	err := commonHTTPRequest(http.MethodPost, queryURL, faceAPI.APIKey, strings.NewReader(`{"url": "`+url+`"}`), &detectResponse)
 
 	return detectResponse, err
 }
@@ -184,7 +205,7 @@ func NewMicrosoftFaceAPI(apiKey string) MicrosoftFaceAPI {
 	return MicrosoftFaceAPI{faceBaseURL, apiKey}
 }
 
-// for Test
-func NewMicrosoftFaceAPIWithURL(baseUrl string, apiKey string) MicrosoftFaceAPI {
-	return MicrosoftFaceAPI{baseUrl, apiKey}
+// NewMicrosoftFaceAPIWithURL is for Test
+func NewMicrosoftFaceAPIWithURL(baseURL string, apiKey string) MicrosoftFaceAPI {
+	return MicrosoftFaceAPI{baseURL, apiKey}
 }

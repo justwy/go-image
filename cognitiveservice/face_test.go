@@ -162,15 +162,15 @@ func TestMicrosoftFaceAPI_Detect(t *testing.T) {
 
 	detectResults, err := faceAPI.Detect("http://treq.me/image1.png")
 	if err != nil  {
-		t.Errorf("expect no err but was ", err);
+		t.Error("expect no err but was ", err);
 	}
 
 	if detectResults == nil || len(detectResults) != 1 {
-		t.Errorf("expect result with 1 result but was nil or 0: ", detectResults);
+		t.Error("expect result with 1 result but was nil or 0: ", detectResults);
 	}
 
-	if detectResults[0].FaceId != "c5c24a82-6845-4031-9d5d-978df9175426" {
-		t.Errorf("Expected c5c24a82-6845-4031-9d5d-978df9175426 but was %s", detectResults[0].FaceId)
+	if detectResults[0].FaceID != "c5c24a82-6845-4031-9d5d-978df9175426" {
+		t.Errorf("Expected c5c24a82-6845-4031-9d5d-978df9175426 but was %s", detectResults[0].FaceID)
 	}
 
 }
