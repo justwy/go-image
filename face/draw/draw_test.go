@@ -10,8 +10,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/justwy/treqme/cognitiveservice"
-	"github.com/justwy/treqme/draw"
+	"github.com/justwy/treqme/face/cognitiveservice"
+	"github.com/justwy/treqme/face/draw"
 )
 
 func TestDrawRectangleFromInternet(t *testing.T) {

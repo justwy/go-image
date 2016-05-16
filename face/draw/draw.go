@@ -7,7 +7,7 @@ import (
 	"image/draw"
 	"strconv"
 
-	"github.com/justwy/treqme/cognitiveservice"
+	"github.com/justwy/treqme/face/cognitiveservice"
 	"github.com/llgcode/draw2d"
 	"github.com/llgcode/draw2d/draw2dimg"
 	"github.com/pkg/errors"

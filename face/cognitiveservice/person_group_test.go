@@ -7,7 +7,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/justwy/treqme/cognitiveservice"
+	"github.com/justwy/treqme/face/cognitiveservice"
 )
 
 var personGroupAPI cognitiveservice.MicrosoftPersonGroupAPI

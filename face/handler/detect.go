@@ -7,9 +7,9 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/justwy/treqme/cognitiveservice"
-	"github.com/justwy/treqme/draw"
-	"github.com/justwy/treqme/s3uploader"
+	"github.com/justwy/treqme/face/cognitiveservice"
+	"github.com/justwy/treqme/face/draw"
+	"github.com/justwy/treqme/face/s3uploader"
 	"github.com/pkg/errors"
 )
 
